@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Convite especial para o aniversário da Tati e do Eron." />
-  <meta name="theme-color" content="#1a0b2e" />
+  <meta name="description" content="Convite especial para o aniversário da Tati e do Eron — uma macarronada à bolonesa cheia de alegria." />
+  <meta name="theme-color" content="#ff8a3d" />
   <title>💌 Convite Especial — Tati & Eron</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,6 +43,7 @@
       <div class="hero-frame">
         <p class="kicker">Com muito carinho convidamos</p>
         <h2 class="guest-name" id="guest-name">Você</h2>
+        <p class="kicker family-tag">e família</p>
         <p class="kicker">para celebrar o aniversário de</p>
         <h1 class="couple">
           <span class="couple-name">Tati</span>
@@ -50,6 +51,11 @@
           <span class="couple-name">Eron</span>
         </h1>
         <p class="hero-quote">“O amor é a melhor festa que dois corações podem oferecer ao mundo.”</p>
+        <p class="hero-menu" aria-label="Cardápio da noite">
+          <span class="menu-icon" aria-hidden="true">🍝</span>
+          E para acompanhar a alegria: uma deliciosa
+          <strong>macarronada à bolonesa</strong>!
+        </p>
       </div>
     </header>
 
@@ -74,20 +80,20 @@
       <div class="detail">
         <div class="detail-icon" aria-hidden="true">📅</div>
         <h4>Quando</h4>
-        <p>Sábado<br/><strong>A confirmar</strong></p>
-        <p class="muted">Recepção às 20h</p>
+        <p>Sexta-feira<br/><strong>05 de junho de 2026</strong></p>
+        <p class="muted">A partir das 18h30</p>
       </div>
       <div class="detail">
         <div class="detail-icon" aria-hidden="true">📍</div>
         <h4>Onde</h4>
-        <p>Local especial<br/><strong>A confirmar</strong></p>
-        <p class="muted">Endereço enviado após RSVP</p>
+        <p>Salão de festas do<br/><strong>Condomínio San Marino I</strong></p>
+        <p class="muted">Rua Amazonas, 521 — Água Verde</p>
       </div>
       <div class="detail">
-        <div class="detail-icon" aria-hidden="true">👗</div>
-        <h4>Traje</h4>
-        <p>Esporte fino<br/><strong>com um toque de brilho</strong></p>
-        <p class="muted">Venha se sentindo incrível</p>
+        <div class="detail-icon" aria-hidden="true">🍝</div>
+        <h4>Cardápio</h4>
+        <p>Macarronada<br/><strong>à bolonesa</strong></p>
+        <p class="muted">Tradição italiana com muito carinho</p>
       </div>
     </section>
 
@@ -127,6 +133,10 @@
               <span>Vou levar quantos acompanhantes?</span>
               <input id="acompanhantes" name="acompanhantes" type="number" min="0" max="10" value="0" inputmode="numeric" />
             </label>
+            <div id="acompanhantes-lista" class="acompanhantes-lista" hidden>
+              <p class="acompanhantes-titulo">Por favor, informe o nome e sobrenome de cada acompanhante:</p>
+              <div id="acompanhantes-campos" class="acompanhantes-campos"></div>
+            </div>
             <label class="field">
               <span>Deixe um recado carinhoso (opcional)</span>
               <textarea id="mensagem" name="mensagem" rows="3" maxlength="280" placeholder="Estou super feliz pelo convite!"></textarea>
