@@ -65,6 +65,7 @@ async function createWorkbook() {
   ws.columns = [
     { header: 'Nome Completo', key: 'nome', width: 40 },
     { header: 'Acompanhantes', key: 'acompanhantes', width: 16 },
+    { header: 'Nomes dos Acompanhantes', key: 'acompanhantesNomes', width: 50 },
     { header: 'Mensagem', key: 'mensagem', width: 50 },
     { header: 'Confirmado em', key: 'data', width: 22 },
   ];
@@ -86,7 +87,7 @@ async function saveGuests(guests) {
   const wb = await createWorkbook();
   const ws = wb.getWorksheet(SHEET_NAME);
   guests.forEach((g) => {
-    ws.addRow([g.nome, g.acompanhantes, g.mensagem, g.data]);
+    ws.addRow([g.nome, g.acompanhantes, g.acompanhantesNomes || '', g.mensagem, g.data]);
   });
   await saveAtomically(wb);
 }
@@ -102,8 +103,9 @@ function readGuestsFromWorksheet(ws) {
     guests.push({
       nome,
       acompanhantes: Number.isFinite(acomp) && acomp >= 0 ? acomp : 0,
-      mensagem: sanitizeName(row.getCell(3).value),
-      data: row.getCell(4).value ? String(row.getCell(4).value) : '',
+      acompanhantesNomes: row.getCell(3).value ? String(row.getCell(3).value) : '',
+      mensagem: sanitizeName(row.getCell(4).value),
+      data: row.getCell(5).value ? String(row.getCell(5).value) : '',
     });
   });
   return guests;
@@ -115,7 +117,7 @@ async function saveAtomically(wb) {
   await fsp.rename(tmp, XLSX_PATH);
 }
 
-async function addGuest({ nome, acompanhantes, mensagem }) {
+async function addGuest({ nome, acompanhantes, acompanhantesNomes, mensagem }) {
   return serialize(async () => {
     const guests = await loadGuests();
 
@@ -128,6 +130,7 @@ async function addGuest({ nome, acompanhantes, mensagem }) {
     guests.push({
       nome,
       acompanhantes,
+      acompanhantesNomes: acompanhantesNomes || '',
       mensagem,
       data: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
     });
@@ -157,8 +160,28 @@ app.post('/api/rsvp', async (req, res) => {
         .json({ ok: false, error: 'Informe nome e sobrenome válidos.' });
     }
 
+    // Coleta os nomes dos acompanhantes (cada um com nome e sobrenome).
+    let acompanhantesNomes = '';
+    if (Array.isArray(body.acompanhantesNomes) && acompanhantes > 0) {
+      const nomesValidos = body.acompanhantesNomes
+        .slice(0, acompanhantes)
+        .map((a) => {
+          const n = sanitizeName(a && a.nome);
+          const s = sanitizeName(a && a.sobrenome);
+          if (n.length < 2 || s.length < 2) return null;
+          return toTitleCase(`${n} ${s}`);
+        })
+        .filter(Boolean);
+      acompanhantesNomes = nomesValidos.join('; ');
+    }
+
     const nomeCompleto = toTitleCase(`${nome} ${sobrenome}`);
-    const result = await addGuest({ nome: nomeCompleto, acompanhantes, mensagem });
+    const result = await addGuest({
+      nome: nomeCompleto,
+      acompanhantes,
+      acompanhantesNomes,
+      mensagem,
+    });
 
     if (!result.ok && result.reason === 'duplicate') {
       return res.status(200).json({

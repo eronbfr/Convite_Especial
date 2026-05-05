@@ -52,7 +52,7 @@
     resize();
     window.addEventListener('resize', resize);
 
-    var colors = ['#e9c98b', '#f8e3b0', '#f4a3c6', '#c95a90', '#ffffff', '#b88a3d'];
+    var colors = ['#ff8a3d', '#ffb347', '#ff5c8a', '#e63946', '#4caf50', '#ffd166', '#ffffff'];
     var pieces = [];
     var count = Math.min(180, Math.floor(window.innerWidth / 6));
     for (var i = 0; i < count; i++) {
@@ -148,8 +148,8 @@
     var sobrenomeCap = toTitleCasePt(sobrenome);
     var nomeCompleto = (nomeCap + ' ' + sobrenomeCap).trim();
     $('#guest-name').textContent = nomeCompleto;
-    $('#guest-greeting').textContent = 'Querido(a) ' + nomeCap + ',';
-    document.title = '💌 Convite para ' + nomeCompleto + ' — Tati & Eron';
+    $('#guest-greeting').textContent = 'Querido(a) ' + nomeCap + ' e família,';
+    document.title = '💌 Convite para ' + nomeCompleto + ' e família — Tati & Eron';
     try {
       sessionStorage.setItem('convite.nome', nomeCap);
       sessionStorage.setItem('convite.sobrenome', sobrenomeCap);
@@ -212,6 +212,64 @@
 
   // -------- Formulário de RSVP --------
 
+  function renderAcompanhantesFields(qtd) {
+    var lista = $('#acompanhantes-lista');
+    var campos = $('#acompanhantes-campos');
+    if (!lista || !campos) return;
+
+    if (!qtd || qtd <= 0) {
+      lista.hidden = true;
+      campos.innerHTML = '';
+      return;
+    }
+
+    // Preserva os valores já digitados ao redimensionar a lista.
+    var existentes = $$('.acompanhante-item', campos).map(function (item) {
+      return {
+        nome: (item.querySelector('input[data-acomp="nome"]') || {}).value || '',
+        sobrenome: (item.querySelector('input[data-acomp="sobrenome"]') || {}).value || '',
+      };
+    });
+
+    campos.innerHTML = '';
+    for (var i = 0; i < qtd; i++) {
+      var prev = existentes[i] || { nome: '', sobrenome: '' };
+      var item = document.createElement('div');
+      item.className = 'acompanhante-item';
+      item.innerHTML =
+        '<label class="field">' +
+          '<span>Acompanhante ' + (i + 1) + ' — Nome</span>' +
+          '<input type="text" data-acomp="nome" maxlength="40" autocomplete="off" placeholder="Nome" />' +
+        '</label>' +
+        '<label class="field">' +
+          '<span>Sobrenome</span>' +
+          '<input type="text" data-acomp="sobrenome" maxlength="40" autocomplete="off" placeholder="Sobrenome" />' +
+        '</label>';
+      item.querySelector('input[data-acomp="nome"]').value = prev.nome;
+      item.querySelector('input[data-acomp="sobrenome"]').value = prev.sobrenome;
+      campos.appendChild(item);
+    }
+    lista.hidden = false;
+  }
+
+  function coletarAcompanhantes() {
+    var nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,40}$/;
+    var lista = [];
+    var itens = $$('#acompanhantes-campos .acompanhante-item');
+    for (var i = 0; i < itens.length; i++) {
+      var nome = (itens[i].querySelector('input[data-acomp="nome"]').value || '').trim();
+      var sobrenome = (itens[i].querySelector('input[data-acomp="sobrenome"]').value || '').trim();
+      if (!nameRegex.test(nome) || !nameRegex.test(sobrenome)) {
+        return { error: 'Informe nome e sobrenome válidos para o acompanhante ' + (i + 1) + '.' };
+      }
+      lista.push({
+        nome: toTitleCasePt(nome),
+        sobrenome: toTitleCasePt(sobrenome),
+      });
+    }
+    return { lista: lista };
+  }
+
   function setupRSVP() {
     var form = $('#rsvp-form');
     var extra = $('#extra-fields');
@@ -221,16 +279,26 @@
     var successTitle = $('#rsvp-success-title');
     var successMsg = $('#rsvp-success-msg');
     var successCounter = $('#rsvp-success-counter');
+    var inputAcomp = $('#acompanhantes');
 
     // Mostra/esconde campos extras conforme escolha.
     $$('input[name="presenca"]').forEach(function (radio) {
       radio.addEventListener('change', function () {
         if (radio.value === 'sim' && radio.checked) {
           extra.hidden = false;
+          renderAcompanhantesFields(parseInt(inputAcomp.value, 10) || 0);
         } else if (radio.value === 'nao' && radio.checked) {
           extra.hidden = true;
         }
       });
+    });
+
+    // Atualiza dinamicamente os campos de nome ao mudar a quantidade.
+    inputAcomp.addEventListener('input', function () {
+      var qtd = parseInt(inputAcomp.value, 10);
+      if (!Number.isFinite(qtd) || qtd < 0) qtd = 0;
+      if (qtd > 10) qtd = 10;
+      renderAcompanhantesFields(qtd);
     });
 
     form.addEventListener('submit', async function (ev) {
@@ -269,6 +337,16 @@
       var acompanhantes = parseInt($('#acompanhantes').value, 10);
       if (!Number.isFinite(acompanhantes) || acompanhantes < 0) acompanhantes = 0;
       if (acompanhantes > 10) acompanhantes = 10;
+
+      var acompResult = coletarAcompanhantes();
+      if (acompResult.error) {
+        errorEl.textContent = acompResult.error;
+        return;
+      }
+      var acompanhantesNomes = acompResult.lista;
+      // Garante consistência entre a quantidade declarada e a lista de nomes.
+      acompanhantes = acompanhantesNomes.length;
+
       var mensagem = ($('#mensagem').value || '').trim().slice(0, 280);
 
       submitBtn.disabled = true;
@@ -299,6 +377,7 @@
             list.push({
               nome: nomeCompleto,
               acompanhantes: acompanhantes,
+              acompanhantesNomes: acompanhantesNomes,
               mensagem: mensagem,
               data: new Date().toISOString(),
             });
@@ -318,6 +397,7 @@
             nome: nome,
             sobrenome: sobrenome,
             acompanhantes: acompanhantes,
+            acompanhantesNomes: acompanhantesNomes,
             mensagem: mensagem,
           }),
         });
@@ -358,10 +438,8 @@
   document.addEventListener('DOMContentLoaded', function () {
     setupWelcome();
     setupRSVP();
-    // Data alvo padrão: 60 dias a partir de hoje (placeholder até definir a data oficial).
-    var target = new Date();
-    target.setDate(target.getDate() + 60);
-    target.setHours(20, 0, 0, 0);
+    // Data oficial: 05/06/2026 (sexta-feira) a partir das 18:30 (horário de Brasília).
+    var target = new Date(2026, 5, 5, 18, 30, 0, 0);
     startCountdown(target);
   });
 })();
