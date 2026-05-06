@@ -12,6 +12,11 @@
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
 
+  // Limite máximo de acompanhantes por convidado. Mantenha em sincronia com o
+  // atributo `max` do input #acompanhantes em index.html e com a validação no
+  // backend (server.js).
+  var MAX_ACOMPANHANTES = 10;
+
   function escapeHTML(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -21,13 +26,21 @@
       .replace(/'/g, '&#39;');
   }
 
+  // Partículas que não são capitalizadas no meio de nomes próprios pt-BR.
+  var PARTICULAS_PT = { da: 1, das: 1, de: 1, di: 1, do: 1, dos: 1, du: 1, e: 1, y: 1, o: 1, a: 1 };
+
   function toTitleCasePt(str) {
-    return String(str || '')
+    var partes = String(str || '')
       .trim()
       .replace(/\s+/g, ' ')
       .toLowerCase()
-      .split(' ')
-      .map(function (p) { return p ? p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1) : p; })
+      .split(' ');
+    return partes
+      .map(function (p, i) {
+        if (!p) return p;
+        if (i > 0 && i < partes.length - 1 && PARTICULAS_PT[p]) return p;
+        return p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1);
+      })
       .join(' ');
   }
 
@@ -295,10 +308,21 @@
 
     // Atualiza dinamicamente os campos de nome ao mudar a quantidade.
     inputAcomp.addEventListener('input', function () {
+      var raw = (inputAcomp.value || '').trim();
+      var qtd = parseInt(raw, 10);
+      if (!Number.isFinite(qtd) || qtd < 0) qtd = 0;
+      if (qtd > MAX_ACOMPANHANTES) {
+        qtd = MAX_ACOMPANHANTES;
+        inputAcomp.value = String(MAX_ACOMPANHANTES);
+      }
+      renderAcompanhantesFields(qtd);
+    });
+    // Garante que o campo não fique inválido ao perder o foco.
+    inputAcomp.addEventListener('blur', function () {
       var qtd = parseInt(inputAcomp.value, 10);
       if (!Number.isFinite(qtd) || qtd < 0) qtd = 0;
-      if (qtd > 10) qtd = 10;
-      renderAcompanhantesFields(qtd);
+      if (qtd > MAX_ACOMPANHANTES) qtd = MAX_ACOMPANHANTES;
+      inputAcomp.value = String(qtd);
     });
 
     form.addEventListener('submit', async function (ev) {
@@ -336,7 +360,7 @@
 
       var acompanhantes = parseInt($('#acompanhantes').value, 10);
       if (!Number.isFinite(acompanhantes) || acompanhantes < 0) acompanhantes = 0;
-      if (acompanhantes > 10) acompanhantes = 10;
+      if (acompanhantes > MAX_ACOMPANHANTES) acompanhantes = MAX_ACOMPANHANTES;
 
       var acompResult = coletarAcompanhantes();
       if (acompResult.error) {

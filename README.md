@@ -45,8 +45,8 @@ backend), publicado automaticamente no GitHub Pages a partir da pasta
 
 A cada confirmação de presença, o arquivo **`lista_de_presenca.xlsx`** é criado/atualizado na raiz do projeto, sempre **ordenado alfabeticamente** (sem diferenciar maiúsculas/minúsculas nem acentos), contendo as colunas:
 
-| Nome Completo | Acompanhantes | Mensagem | Confirmado em |
-|---------------|---------------|----------|---------------|
+| Nome Completo | Acompanhantes | Nomes dos Acompanhantes | Mensagem | Confirmado em |
+|---------------|---------------|-------------------------|----------|---------------|
 
 ## 🗂 Estrutura
 
