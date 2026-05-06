@@ -18,18 +18,18 @@ window.CONVITE_CONFIG = {
     // barra de endereço e troque "/viewform..." por "/formResponse".
     // Exemplo:
     //   https://docs.google.com/forms/d/e/1FAIpQLSc.../formResponse
-    formResponseUrl: '',
+    formResponseUrl: 'https://docs.google.com/forms/d/1HTacpvSJ0ThGl3sOBxl0HAKqEui0VdOueD24bgz4rYU/formResponse',
 
     // IDs dos campos no formato "entry.<numero>". Para descobri-los,
     // use o botão "Obter link pré-preenchido" no menu (⋮) do Google Forms,
     // preencha cada campo com algo distinto, copie o link gerado e leia
     // os pares "entry.123456789=valor" da query string.
     entries: {
-      nome: '',                // ex.: 'entry.111111111'
-      sobrenome: '',           // ex.: 'entry.222222222'
-      acompanhantes: '',       // ex.: 'entry.333333333'
-      acompanhantesNomes: '',  // ex.: 'entry.444444444'
-      mensagem: '',            // ex.: 'entry.555555555'
+      nome: 'entry.877086558',                // ex.: 'entry.111111111'
+      sobrenome: 'entry.1498135098',           // ex.: 'entry.222222222'
+      acompanhantes: 'entry.1424661284',       // ex.: 'entry.333333333'
+      acompanhantesNomes: 'entry.2606285',  // ex.: 'entry.444444444'
+      mensagem: 'entry.868210063',            // ex.: 'entry.555555555'
     },
   },
 };
