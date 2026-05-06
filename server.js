@@ -49,12 +49,51 @@ function sanitizeName(str) {
     .slice(0, 80);
 }
 
+function sanitizeMessage(str) {
+  // Mensagens podem ter até 280 caracteres. Mantemos quebras de linha simples
+  // mas removemos os demais caracteres de controle.
+  return String(str || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+    .slice(0, 280);
+}
+
+function sanitizeAcompanhantesNomes(str) {
+  // Preserva o separador "; " entre nomes e impede caracteres de controle.
+  return String(str || '')
+    .replace(/[\u0000-\u001f\u007f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 1000);
+}
+
+// Partículas que não devem ser capitalizadas no meio de um nome próprio em pt-BR.
+const PARTICULAS_PT = new Set([
+  'da', 'das', 'de', 'di', 'do', 'dos', 'du', 'e', 'y', 'o', 'a',
+]);
+
 function toTitleCase(str) {
-  return str
-    .toLowerCase()
-    .split(' ')
-    .map((p) => (p ? p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1) : p))
+  const partes = String(str || '').toLowerCase().split(' ');
+  return partes
+    .map((p, i) => {
+      if (!p) return p;
+      if (i > 0 && i < partes.length - 1 && PARTICULAS_PT.has(p)) return p;
+      return p.charAt(0).toLocaleUpperCase('pt-BR') + p.slice(1);
+    })
     .join(' ');
+}
+
+function formatExcelDateValue(value) {
+  // O ExcelJS pode devolver a coluna "Confirmado em" como Date, número, ou
+  // string. Garantimos sempre uma representação textual estável em pt-BR.
+  if (value === null || value === undefined || value === '') return '';
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+  }
+  return String(value).trim();
 }
 
 async function createWorkbook() {
@@ -103,9 +142,9 @@ function readGuestsFromWorksheet(ws) {
     guests.push({
       nome,
       acompanhantes: Number.isFinite(acomp) && acomp >= 0 ? acomp : 0,
-      acompanhantesNomes: row.getCell(3).value ? String(row.getCell(3).value) : '',
-      mensagem: sanitizeName(row.getCell(4).value),
-      data: row.getCell(5).value ? String(row.getCell(5).value) : '',
+      acompanhantesNomes: sanitizeAcompanhantesNomes(row.getCell(3).value),
+      mensagem: sanitizeMessage(row.getCell(4).value),
+      data: formatExcelDateValue(row.getCell(5).value),
     });
   });
   return guests;
@@ -150,7 +189,7 @@ app.post('/api/rsvp', async (req, res) => {
     const body = req.body || {};
     const nome = sanitizeName(body.nome);
     const sobrenome = sanitizeName(body.sobrenome);
-    const mensagem = sanitizeName(body.mensagem).slice(0, 280);
+    const mensagem = sanitizeMessage(body.mensagem);
     const acomp = Number.parseInt(body.acompanhantes, 10);
     const acompanhantes = Number.isFinite(acomp) && acomp >= 0 && acomp <= 10 ? acomp : 0;
 
