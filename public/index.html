@@ -79,7 +79,19 @@
 
     <section class="details">
       <div class="detail">
-        <div class="detail-icon" aria-hidden="true">📅</div>
+        <div class="detail-icon" aria-hidden="true">
+          <!--
+            SVG de calendário em vez do emoji 📅 (U+1F4C5): no iOS/macOS o
+            emoji é sempre renderizado mostrando "JUL 17", o que confundia
+            os convidados no mobile. O SVG mantém a mesma aparência em
+            qualquer dispositivo.
+          -->
+          <svg viewBox="0 0 24 24" width="32" height="32" role="img" aria-hidden="true" focusable="false">
+            <rect x="3" y="5" width="18" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M3 9h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
         <h4>Quando</h4>
         <p>Sexta-feira<br/><strong>05 de junho de 2026</strong></p>
         <p class="muted">A partir das 18h30</p>

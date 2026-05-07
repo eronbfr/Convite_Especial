@@ -13,11 +13,21 @@
 
 window.CONVITE_CONFIG = {
   googleForm: {
-    // URL do endpoint "formResponse" do seu Google Form. Para obtê-la,
-    // abra o formulário no modo de visualização (👁), copie a URL da
-    // barra de endereço e troque "/viewform..." por "/formResponse".
-    // Exemplo:
-    //   https://docs.google.com/forms/d/e/1FAIpQLSc.../formResponse
+    // ⚠️ ATENÇÃO ao formato da URL!
+    //
+    // Use SEMPRE a URL do formulário **publicado** (a que os convidados
+    // acessam), no formato:
+    //
+    //     https://docs.google.com/forms/d/e/{ID_LONGO}/formResponse
+    //
+    // O `{ID_LONGO}` começa com `1FAIpQLS...` e só aparece quando você
+    // abre o formulário no modo de visualização (botão 👁) — copie a URL
+    // dessa página e troque o final `/viewform...` por `/formResponse`.
+    //
+    // ❌ NÃO use a URL do editor (`/forms/d/{id}/formResponse`, sem o
+    //    `/e/`). Postagens nessa URL exigem login do dono do formulário e
+    //    são silenciosamente descartadas para visitantes anônimos — a
+    //    planilha do Google Sheets vinculada NÃO recebe as confirmações.
     formResponseUrl: 'https://docs.google.com/forms/d/1HTacpvSJ0ThGl3sOBxl0HAKqEui0VdOueD24bgz4rYU/formResponse',
 
     // IDs dos campos no formato "entry.<numero>". Para descobri-los,
