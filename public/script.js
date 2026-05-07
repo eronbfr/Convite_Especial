@@ -241,6 +241,25 @@
       return { configured: false };
     }
 
+    // Detecta a URL do EDITOR do Google Forms (`/forms/d/{id}/formResponse`,
+    // sem o `/d/e/`). Esse endpoint exige login do dono do formulário, então
+    // posts anônimos dos convidados são silenciosamente descartados e a
+    // planilha vinculada nunca recebe as confirmações. Quando isso acontece,
+    // tratamos como "não configurado" para que o fluxo caia no backend
+    // Express ou no fallback de localStorage, e avisamos no console para
+    // facilitar o diagnóstico.
+    if (!/\/forms\/d\/e\//.test(cfg.formResponseUrl)) {
+      console.warn(
+        '[Convite] formResponseUrl parece ser a URL do EDITOR do Google Forms ' +
+        '("/forms/d/{id}/formResponse"). Para que as respostas cheguem ao ' +
+        'Google Sheets vinculado é necessário usar a URL do formulário ' +
+        'PUBLICADO ("/forms/d/e/{id}/formResponse"). Abra o formulário no ' +
+        'modo de visualização (👁), copie a URL e troque "/viewform" por ' +
+        '"/formResponse". Veja public/config.js.'
+      );
+      return { configured: false };
+    }
+
     var data = new URLSearchParams();
     function appendIf(entryId, value) {
       if (entryId && value !== undefined && value !== null && value !== '') {

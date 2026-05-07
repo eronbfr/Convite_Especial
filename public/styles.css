@@ -440,6 +440,17 @@ body::before {
   font-size: 32px;
   margin-bottom: 10px;
   filter: drop-shadow(0 4px 8px rgba(230, 88, 34, 0.25));
+  /*
+   * Para o ícone SVG da data ("Quando"): herda a cor dos demais ícones
+   * (tom dourado/tomate) via `currentColor` e mantém o mesmo tamanho do
+   * texto/emoji utilizado nos outros cards.
+   */
+  color: var(--tomato);
+  line-height: 1;
+}
+.detail-icon svg {
+  display: inline-block;
+  vertical-align: middle;
 }
 .detail h4 {
   font-family: var(--font-display);
