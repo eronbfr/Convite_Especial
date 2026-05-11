@@ -17,6 +17,13 @@
   // backend (server.js).
   var MAX_ACOMPANHANTES = 10;
 
+  // Rótulos enviados ao Google Form na pergunta de confirmação de presença.
+  // Precisam bater EXATAMENTE com as opções configuradas no formulário
+  // (veja README.md, seção "RSVP via Google Forms"); senão o Google Forms
+  // descarta a resposta como inválida.
+  var PRESENCA_LABEL_SIM = 'Sim, estarei presente!';
+  var PRESENCA_LABEL_NAO = 'Infelizmente não poderei ir';
+
   function escapeHTML(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -267,6 +274,7 @@
       }
     }
 
+    appendIf(entries.presenca, payload.presencaLabel);
     appendIf(entries.nome, toTitleCasePt(payload.nome));
     appendIf(entries.sobrenome, toTitleCasePt(payload.sobrenome));
     appendIf(entries.acompanhantes, payload.acompanhantes);
@@ -416,8 +424,22 @@
         return;
       }
 
-      // Resposta "não vou" — agradecemos sem chamar o servidor.
+      // Resposta "não vou": ainda enviamos ao Google Form (se configurado)
+      // para que a recusa também caia na planilha de RSVPs. Sem Google Form
+      // configurado, agradecemos sem chamar o backend (que só registra
+      // confirmações positivas no XLSX).
       if (presenca === 'nao') {
+        try {
+          await submitToGoogleForm({
+            presencaLabel: PRESENCA_LABEL_NAO,
+            nome: nome,
+            sobrenome: sobrenome,
+            nomeCompleto: (toTitleCasePt(nome) + ' ' + toTitleCasePt(sobrenome)).trim(),
+            acompanhantes: 0,
+            acompanhantesNomes: [],
+            mensagem: '',
+          });
+        } catch (_) { /* fallback silencioso */ }
         form.hidden = true;
         success.hidden = false;
         successTitle.textContent = 'Sentiremos sua falta 💔';
@@ -487,6 +509,7 @@
         //    caminho preferencial: a confirmação vai parar diretamente na
         //    planilha do Google Sheets associada ao formulário.
         var googleResult = await submitToGoogleForm({
+          presencaLabel: PRESENCA_LABEL_SIM,
           nome: nome,
           sobrenome: sobrenome,
           nomeCompleto: nomeCompleto,
