@@ -35,11 +35,20 @@ window.CONVITE_CONFIG = {
     // preencha cada campo com algo distinto, copie o link gerado e leia
     // os pares "entry.123456789=valor" da query string.
     entries: {
-      nome: 'entry.877086558',                // ex.: 'entry.111111111'
+      // Pergunta de confirmação de presença (Sim/Não). Adicione no Google
+      // Form uma pergunta do tipo "Múltipla escolha" com as opções EXATAS:
+      //   - Sim, estarei presente!
+      //   - Infelizmente não poderei ir
+      // Em seguida descubra o `entry.<numero>` correspondente pelo método
+      // do "link pré-preenchido" (veja README) e cole abaixo. Enquanto este
+      // campo estiver em branco, a confirmação de presença NÃO chega à
+      // planilha — apenas os demais campos são enviados.
+      presenca: '',                            // ex.: 'entry.666666666'
+      nome: 'entry.877086558',                 // ex.: 'entry.111111111'
       sobrenome: 'entry.1498135098',           // ex.: 'entry.222222222'
       acompanhantes: 'entry.1424661284',       // ex.: 'entry.333333333'
-      acompanhantesNomes: 'entry.2606285',  // ex.: 'entry.444444444'
-      mensagem: 'entry.868210063',            // ex.: 'entry.555555555'
+      acompanhantesNomes: 'entry.2606285',     // ex.: 'entry.444444444'
+      mensagem: 'entry.868210063',             // ex.: 'entry.555555555'
     },
   },
 };

@@ -51,17 +51,23 @@ Esta é a forma mais simples de receber as confirmações em **uma única
 planilha do Google Sheets**, sem precisar manter servidor algum. Só
 precisa fazer uma vez:
 
-1. **Crie o formulário** em <https://forms.google.com> com 5 perguntas
-   (todas do tipo *Resposta curta*, exceto a mensagem que pode ser
-   *Parágrafo*):
+1. **Crie o formulário** em <https://forms.google.com> com 6 perguntas
+   (use *Resposta curta* para nome/sobrenome/acompanhantes,
+   *Múltipla escolha* para a presença e *Parágrafo* para os nomes dos
+   acompanhantes e a mensagem):
 
-   | # | Pergunta no Form        | Mapeia para               |
-   |---|-------------------------|---------------------------|
-   | 1 | Nome                    | `entries.nome`            |
-   | 2 | Sobrenome               | `entries.sobrenome`       |
-   | 3 | Acompanhantes (número)  | `entries.acompanhantes`   |
-   | 4 | Nomes dos acompanhantes | `entries.acompanhantesNomes` |
-   | 5 | Mensagem                | `entries.mensagem`        |
+   | # | Pergunta no Form         | Tipo              | Mapeia para                  |
+   |---|--------------------------|-------------------|------------------------------|
+   | 1 | Confirmação de presença  | Múltipla escolha¹ | `entries.presenca`           |
+   | 2 | Nome                     | Resposta curta    | `entries.nome`               |
+   | 3 | Sobrenome                | Resposta curta    | `entries.sobrenome`          |
+   | 4 | Acompanhantes (número)   | Resposta curta    | `entries.acompanhantes`      |
+   | 5 | Nomes dos acompanhantes  | Parágrafo         | `entries.acompanhantesNomes` |
+   | 6 | Mensagem                 | Parágrafo         | `entries.mensagem`           |
+
+   ¹ As opções da pergunta de presença precisam ser **exatamente**:
+   `Sim, estarei presente!` e `Infelizmente não poderei ir` — caso
+   contrário o Google Form descarta a resposta como inválida.
 
 2. No menu **⋮** do Google Forms, escolha **"Obter link
    pré-preenchido"**, preencha cada pergunta com algo único (ex.:
@@ -89,6 +95,7 @@ precisa fazer uma vez:
      googleForm: {
        formResponseUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSc.../formResponse',
        entries: {
+         presenca: 'entry.666666666',
          nome: 'entry.111111111',
          sobrenome: 'entry.222222222',
          acompanhantes: 'entry.333333333',

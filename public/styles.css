@@ -415,6 +415,41 @@ body::before {
 .story-card p:last-child { margin-bottom: 0; }
 .story-card strong { color: var(--tomato); font-weight: 700; }
 
+.photo {
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 0 4px;
+}
+.photo-frame {
+  margin: 0;
+  max-width: 520px;
+  width: 100%;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--glass-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.photo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--radius-lg) - 6px);
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+}
+.photo-frame figcaption {
+  margin-top: 12px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  color: var(--muted);
+}
+
 .details {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
