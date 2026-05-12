@@ -28,7 +28,7 @@ window.CONVITE_CONFIG = {
     //    `/e/`). Postagens nessa URL exigem login do dono do formulário e
     //    são silenciosamente descartadas para visitantes anônimos — a
     //    planilha do Google Sheets vinculada NÃO recebe as confirmações.
-    formResponseUrl: 'https://docs.google.com/forms/d/e/1FAIpQLScEGrwX3oVfkaQKWZvBCJ2w_8m9w1E0AdBhbCZbyCh7rtrTeA/formResponse',
+    formResponseUrl: 'https://docs.google.com/forms/d/e/1MaZpakOk_08NfM_JxNjAFPCjFSamFoQlHfvhysp2Hhw/formResponse',
 
     // IDs dos campos no formato "entry.<numero>". Para descobri-los,
     // use o botão "Obter link pré-preenchido" no menu (⋮) do Google Forms,
@@ -44,11 +44,11 @@ window.CONVITE_CONFIG = {
       // campo estiver em branco, a confirmação de presença NÃO chega à
       // planilha — apenas os demais campos são enviados.
       presenca: '',                            // ex.: 'entry.666666666'
-      nome: 'entry.877086558',                 // ex.: 'entry.111111111'
-      sobrenome: 'entry.1498135098',           // ex.: 'entry.222222222'
-      acompanhantes: 'entry.1424661284',       // ex.: 'entry.333333333'
-      acompanhantesNomes: 'entry.2606285',     // ex.: 'entry.444444444'
-      mensagem: 'entry.868210063',             // ex.: 'entry.555555555'
+      nome: 'entry.441531675',                 // ex.: 'entry.111111111'
+      sobrenome: 'entry.1392847627',           // ex.: 'entry.222222222'
+      acompanhantes: 'entry.402178815',       // ex.: 'entry.333333333'
+      acompanhantesNomes: 'entry.96222933',     // ex.: 'entry.444444444'
+      mensagem: 'entry.1701455314',             // ex.: 'entry.555555555'
     },
   },
 };
