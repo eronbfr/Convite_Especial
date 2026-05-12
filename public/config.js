@@ -43,7 +43,7 @@ window.CONVITE_CONFIG = {
       // do "link pré-preenchido" (veja README) e cole abaixo. Enquanto este
       // campo estiver em branco, a confirmação de presença NÃO chega à
       // planilha — apenas os demais campos são enviados.
-      presenca: '',                            // ex.: 'entry.666666666'
+      presenca: 'entry.1453893376',                            // ex.: 'entry.666666666'
       nome: 'entry.441531675',                 // ex.: 'entry.111111111'
       sobrenome: 'entry.1392847627',           // ex.: 'entry.222222222'
       acompanhantes: 'entry.402178815',       // ex.: 'entry.333333333'
