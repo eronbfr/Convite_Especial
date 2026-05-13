@@ -28,7 +28,7 @@ window.CONVITE_CONFIG = {
     //    `/e/`). Postagens nessa URL exigem login do dono do formulário e
     //    são silenciosamente descartadas para visitantes anônimos — a
     //    planilha do Google Sheets vinculada NÃO recebe as confirmações.
-    formResponseUrl: 'https://docs.google.com/forms/d/1kDApUv3yGjzmZ314RG8UQ5fFrIlXAgVRXVxy-g3E24k/formResponse',
+    formResponseUrl: 'https://docs.google.com/forms/d/e/1kDApUv3yGjzmZ314RG8UQ5fFrIlXAgVRXVxy-g3E24k/formResponse',
 
     // IDs dos campos no formato "entry.<numero>". Para descobri-los,
     // use o botão "Obter link pré-preenchido" no menu (⋮) do Google Forms,
